@@ -4,6 +4,53 @@
 
 ##### Enhancements
 
+* Use `test_target_type?` when adding testable reference  
+  [Dimitris Koutsogiorgas](https://github.com/dnkoutso)
+  [#487](https://github.com/CocoaPods/Xcodeproj/pull/487)
+
+* Add test reference to xcscheme if target is of type test  
+  [Dimitris Koutsogiorgas](https://github.com/dnkoutso)
+  [#485](https://github.com/CocoaPods/Xcodeproj/pull/485)
+
+* Make build settings parsing optionally take into account any associated xcconfig files.  
+  [Renzo Crisóstomo](https://github.com/ruenzuo)
+  [#180](https://github.com/CocoaPods/Xcodeproj/pull/180)
+
+##### Bug Fixes
+
+* Do not crash when there are no `BuildActionEntries` in a scheme.  
+  [Danielle Tomlinson](https://github.com/dantoml)
+  [#486](https://github.com/CocoaPods/Xcodeproj/pull/486)
+
+
+## 1.4.4 (2017-04-07)
+
+##### Enhancements
+
+* `ui_test_bundle` product are treated as xctest bundles.  
+  [Rajinder Ramgarhia](https://github.com/1nput0utput)
+  [#467](https://github.com/CocoaPods/Xcodeproj/pull/467)
+
+* Remove the dependency upon `activesupport`.  
+  [Samuel Giddins](https://github.com/segiddins)
+
+##### Bug Fixes
+
+* None.  
+
+
+## 1.4.3 (2017-03-31)
+
+##### Enhancements
+
+* Updated Common Build Settings with Xcode 8.3.  
+  [Louis D'hauwe](https://github.com/louisdh)
+  [#474](https://github.com/CocoaPods/Xcodeproj/pull/474)
+
+* Updated Common Build Settings with Xcode 8.2.1.  
+  [Louis D'hauwe](https://github.com/louisdh)
+  [#468](https://github.com/CocoaPods/Xcodeproj/pull/468)
+
 * Return file references when adding system frameworks to a target.  
   [Keith Smiley](https://github.com/keith)
   [#466](https://github.com/CocoaPods/Xcodeproj/pull/466)
@@ -14,7 +61,10 @@
 
 ##### Bug Fixes
 
-* None.  
+* Reference proxy display name always returns "ReferenceProxy".
+  Behavior corrected to return the name or path of the reference.  
+  [Barak Weiss](https://github.com/barakwei)
+  [#472](https://github.com/CocoaPods/Xcodeproj/issues/472)
 
 
 ## 1.4.2 (2016-12-19)

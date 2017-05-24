@@ -4,17 +4,17 @@ module Xcodeproj
   module Constants
     # @return [String] The last known iOS SDK (stable).
     #
-    LAST_KNOWN_IOS_SDK = '10.0'
+    LAST_KNOWN_IOS_SDK = '10.3'
 
     # @return [String] The last known OS X SDK (stable).
     #
     LAST_KNOWN_OSX_SDK = '10.12'
 
     # @return [String] The last known tvOS SDK (stable).
-    LAST_KNOWN_TVOS_SDK = '10.0'
+    LAST_KNOWN_TVOS_SDK = '10.2'
 
     # @return [String] The last known watchOS SDK (stable).
-    LAST_KNOWN_WATCHOS_SDK = '3.0'
+    LAST_KNOWN_WATCHOS_SDK = '3.2'
 
     # @return [String] The last known archive version to Xcodeproj.
     #
@@ -33,7 +33,7 @@ module Xcodeproj
 
     # @return [String] The last known object version to Xcodeproj.
     #
-    LAST_SWIFT_UPGRADE_CHECK = '0730'
+    LAST_SWIFT_UPGRADE_CHECK = '0830'
 
     # @return [String] The version of `.xcscheme` files supported by Xcodeproj
     #
@@ -149,6 +149,7 @@ module Xcodeproj
       :bundle           => 'bundle',
       :octest_bundle    => 'octest',
       :unit_test_bundle => 'xctest',
+      :ui_test_bundle   => 'xctest',
       :app_extension    => 'appex',
       :watch2_extension => 'appex',
       :watch2_app       => 'app',
@@ -192,11 +193,18 @@ module Xcodeproj
       [:debug, :ios] => {
         # Empty?
       }.freeze,
+      [:swift] => {
+        'SWIFT_VERSION'                       => '3.0',
+      }.freeze,
       [:debug, :application, :swift] => {
         'SWIFT_OPTIMIZATION_LEVEL'          => '-Onone',
       }.freeze,
       [:debug, :swift] => {
-        'SWIFT_OPTIMIZATION_LEVEL'          => '-Onone',
+        'SWIFT_OPTIMIZATION_LEVEL'            => '-Onone',
+        'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => 'DEBUG',
+      }.freeze,
+      [:release, :swift] => {
+        'SWIFT_OPTIMIZATION_LEVEL'          => '-Owholemodule',
       }.freeze,
       [:debug, :static_library, :swift] => {
       }.freeze,
@@ -215,6 +223,7 @@ module Xcodeproj
         'LD_RUNPATH_SEARCH_PATHS'           => ['$(inherited)', '@executable_path/Frameworks', '@loader_path/Frameworks'],
         'CODE_SIGN_IDENTITY[sdk=iphoneos*]' => 'iPhone Developer',
         'TARGETED_DEVICE_FAMILY'            => '1,2',
+        'CODE_SIGN_IDENTITY'                => '',
       }.freeze,
       [:osx, :framework] => {
         'LD_RUNPATH_SEARCH_PATHS'           => ['$(inherited)', '@executable_path/../Frameworks', '@loader_path/Frameworks'],
@@ -226,10 +235,12 @@ module Xcodeproj
         'APPLICATION_EXTENSION_API_ONLY'    => 'YES',
         'LD_RUNPATH_SEARCH_PATHS'           => ['$(inherited)', '@executable_path/Frameworks', '@loader_path/Frameworks'],
         'TARGETED_DEVICE_FAMILY'            => '4',
+        'CODE_SIGN_IDENTITY'                => '',
       }.freeze,
       [:tvos, :framework] => {
         'LD_RUNPATH_SEARCH_PATHS'           => ['$(inherited)', '@executable_path/Frameworks', '@loader_path/Frameworks'],
         'TARGETED_DEVICE_FAMILY'            => '3',
+        'CODE_SIGN_IDENTITY'                => '',
       }.freeze,
       [:framework, :swift] => {
         'DEFINES_MODULE'                    => 'YES',
@@ -274,14 +285,14 @@ module Xcodeproj
         'SKIP_INSTALL'                      => 'YES',
         'TARGETED_DEVICE_FAMILY'            => '4',
       }.freeze,
-      [:watchos, :application, :swift] => {
-        'EMBEDDED_CONTENT_CONTAINS_SWIFT'   => 'YES',
-      }.freeze,
       [:tvos, :application] => {
         'ASSETCATALOG_COMPILER_APPICON_NAME' => 'App Icon & Top Shelf Image',
         'ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME' => 'LaunchImage',
         'TARGETED_DEVICE_FAMILY'            => '3',
         'LD_RUNPATH_SEARCH_PATHS'           => ['$(inherited)', '@executable_path/Frameworks'],
+      }.freeze,
+      [:watchos, :application, :swift] => {
+        'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'YES',
       }.freeze,
       [:bundle] => {
         'PRODUCT_NAME'                      => '$(TARGET_NAME)',
@@ -303,28 +314,32 @@ module Xcodeproj
     #
     PROJECT_DEFAULT_BUILD_SETTINGS = {
       :all => {
-        'ALWAYS_SEARCH_USER_PATHS'           => 'NO',
-        'CLANG_ANALYZER_NONNULL'             => 'YES',
-        'CLANG_CXX_LANGUAGE_STANDARD'        => 'gnu++0x',
-        'CLANG_CXX_LIBRARY'                  => 'libc++',
-        'CLANG_ENABLE_MODULES'               => 'YES',
-        'CLANG_ENABLE_OBJC_ARC'              => 'YES',
-        'CLANG_WARN__DUPLICATE_METHOD_MATCH' => 'YES',
-        'CLANG_WARN_BOOL_CONVERSION'         => 'YES',
-        'CLANG_WARN_CONSTANT_CONVERSION'     => 'YES',
-        'CLANG_WARN_DIRECT_OBJC_ISA_USAGE'   => 'YES',
-        'CLANG_WARN_EMPTY_BODY'              => 'YES',
-        'CLANG_WARN_ENUM_CONVERSION'         => 'YES',
-        'CLANG_WARN_INT_CONVERSION'          => 'YES',
-        'CLANG_WARN_OBJC_ROOT_CLASS'         => 'YES',
-        'CLANG_WARN_UNREACHABLE_CODE'        => 'YES',
-        'GCC_C_LANGUAGE_STANDARD'            => 'gnu99',
-        'GCC_WARN_64_TO_32_BIT_CONVERSION'   => 'YES',
-        'GCC_WARN_ABOUT_RETURN_TYPE'         => 'YES',
-        'GCC_WARN_UNDECLARED_SELECTOR'       => 'YES',
-        'GCC_WARN_UNINITIALIZED_AUTOS'       => 'YES',
-        'GCC_WARN_UNUSED_FUNCTION'           => 'YES',
-        'GCC_WARN_UNUSED_VARIABLE'           => 'YES',
+        'ALWAYS_SEARCH_USER_PATHS'                => 'NO',
+        'CLANG_ANALYZER_NONNULL'                  => 'YES',
+        'CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION' => 'YES',
+        'CLANG_CXX_LANGUAGE_STANDARD'             => 'gnu++0x',
+        'CLANG_CXX_LIBRARY'                       => 'libc++',
+        'CLANG_ENABLE_MODULES'                    => 'YES',
+        'CLANG_ENABLE_OBJC_ARC'                   => 'YES',
+        'CLANG_WARN__DUPLICATE_METHOD_MATCH'      => 'YES',
+        'CLANG_WARN_BOOL_CONVERSION'              => 'YES',
+        'CLANG_WARN_CONSTANT_CONVERSION'          => 'YES',
+        'CLANG_WARN_DIRECT_OBJC_ISA_USAGE'        => 'YES',
+        'CLANG_WARN_EMPTY_BODY'                   => 'YES',
+        'CLANG_WARN_ENUM_CONVERSION'              => 'YES',
+        'CLANG_WARN_INT_CONVERSION'               => 'YES',
+        'CLANG_WARN_OBJC_ROOT_CLASS'              => 'YES',
+        'CLANG_WARN_UNREACHABLE_CODE'             => 'YES',
+        'CLANG_WARN_DOCUMENTATION_COMMENTS'       => 'YES',
+        'CLANG_WARN_INFINITE_RECURSION'           => 'YES',
+        'CLANG_WARN_SUSPICIOUS_MOVE'              => 'YES',
+        'GCC_C_LANGUAGE_STANDARD'                 => 'gnu99',
+        'GCC_WARN_64_TO_32_BIT_CONVERSION'        => 'YES',
+        'GCC_WARN_ABOUT_RETURN_TYPE'              => 'YES',
+        'GCC_WARN_UNDECLARED_SELECTOR'            => 'YES',
+        'GCC_WARN_UNINITIALIZED_AUTOS'            => 'YES',
+        'GCC_WARN_UNUSED_FUNCTION'                => 'YES',
+        'GCC_WARN_UNUSED_VARIABLE'                => 'YES',
       },
       :release => {
         'COPY_PHASE_STRIP'                   => 'YES',
@@ -368,5 +383,12 @@ module Xcodeproj
     # @return [Array] The extensions which are associated with header files.
     #
     HEADER_FILES_EXTENSIONS = %w(.h .hh .hpp .ipp .tpp .hxx .def).freeze
+
+    # @return [Array] The keywords Xcode use to identify a build setting can
+    #                 inherit values from a previous precedence level
+    INHERITED_KEYWORDS = %w(
+      $(inherited)
+      ${inherited}
+    ).freeze
   end
 end
